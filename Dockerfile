@@ -16,4 +16,4 @@ RUN apt-get update -y && \
 EXPOSE 8501
 
 # Run Streamlit app
-CMD ["streamlit", "run", "app/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
