@@ -1,45 +1,33 @@
-⚡ LinkedIn Post Generator with Agentic AI
+# ⚡ LinkedIn Post Generator with Agentic AI
 
-An Agentic AI workflow built with LangChain, LangGraph, and Groq LLMs that fetches trending news, summarizes it, reviews/improves content, and generates polished LinkedIn-ready posts — deployed end-to-end with Docker, AWS ECR, EC2, and GitHub Actions CI/CD.
+An **Agentic AI workflow** built with **LangChain, LangGraph, and Groq LLMs** that fetches trending news, summarizes it, reviews/improves content, and generates polished **LinkedIn-ready posts** — deployed end-to-end with **Docker, AWS ECR, EC2, and GitHub Actions CI/CD**.
 
+---
 
+## 🌟 Features
+- 🔍 **News Finder Agent** → Fetches trending industry news using Tavily API.  
+- 📝 **Summarizer Agent** → Structures raw content into insights (Headings → Subheadings → Bullets).  
+- ✅ **Reviewer Agent** → Evaluates summaries (tone, engagement, recency).  
+- 🔄 **Improver Agent** → Self-correcting loop, improves summaries based on feedback.  
+- ✍️ **Generator Agent** → Creates LinkedIn posts (hook → insights → CTA + hashtags).  
+- 🚀 **Deployment Ready** → Dockerized, pushed to ECR, deployed on EC2 with GitHub Actions.  
 
-🌟 Features
+---
 
-🔍 News Finder Agent → Fetches trending industry news using Tavily API.
+## 🛠️ Tech Stack
+- **LangChain / LangGraph** → agent workflow  
+- **Groq LLMs** → fast reasoning & text generation  
+- **Streamlit** → web UI for interaction  
+- **Docker** → containerization  
+- **AWS ECR + EC2** → cloud deployment  
+- **GitHub Actions** → CI/CD pipeline  
+- **Python** → 3.10+  
 
-📝 Summarizer Agent → Structures raw content into insights (Headings → Subheadings → Bullets).
+---
+![63dd0e38b1b6121af8f71330f702f5b3d9b810d66453bb25500a1eeb](https://github.com/user-attachments/assets/def033aa-f88d-4bb2-a687-641525db8f2c)
 
-✅ Reviewer Agent → Evaluates summaries (tone, engagement, recency).
-
-🔄 Improver Agent → Self-correcting loop, improves summaries based on feedback.
-
-✍️ Generator Agent → Creates LinkedIn posts (hook → insights → CTA + hashtags).
-
-🚀 Deployment Ready → Dockerized, pushed to ECR, deployed on EC2 with GitHub Actions.
-
-![63dd0e38b1b6121af8f71330f702f5b3d9b810d66453bb25500a1eeb](https://github.com/user-attachments/assets/c445c927-8943-403a-b595-1671aaf48003)
-
-
-
-
-🛠️ Tech Stack
-
-LangChain / LangGraph → agent workflow
-
-Groq LLMs → fast reasoning & text generation
-
-Streamlit → web UI for interaction
-
-Docker → containerization
-
-AWS ECR + EC2 → cloud deployment
-
-GitHub Actions → CI/CD pipeline
-
-Python → 3.10+
-
-📂 Project Structure
+## 📂 Project Structure
+```
 .
 ├── app/
 │   └── app.py              # Streamlit UI
@@ -57,92 +45,110 @@ Python → 3.10+
 └── .github/
     └── workflows/
         └── main.yml        # CI/CD pipeline
+```
 
-⚙️ Setup & Run Locally
-1. Clone repo
+---
+
+## ⚙️ Setup & Run Locally
+
+### 1. Clone repo
+```bash
 git clone https://github.com/<your-username>/linkedin-agent-app.git
 cd linkedin-agent-app
+```
 
-2. Setup environment
+### 2. Setup environment
+```bash
 conda create -n agentic_ai python=3.11 -y
 conda activate agentic_ai
 pip install -r requirements.txt
+```
 
-3. Configure .env
-
-Create a .env file (never commit this!):
-
+### 3. Configure `.env`
+Create a `.env` file (never commit this!):
+```ini
 GROQ_API_KEY=your_groq_key
 TAVILY_API_KEY=your_tavily_key
 OPENAI_API_KEY=your_openai_key   # optional
+```
 
-4. Run locally
+### 4. Run locally
+```bash
 streamlit run app/app.py
+```
 
-🐳 Docker Usage
-Build image
+---
+
+## 🐳 Docker Usage
+
+### Build image
+```bash
 docker build -t linkedin-agent .
+```
 
-Run container
-docker run -d -p 8080:8501 --name linkedin-agent \
-  -e GROQ_API_KEY=your_groq_key \
-  -e TAVILY_API_KEY=your_tavily_key \
-  linkedin-agent:latest
+### Run container
+```bash
+docker run -d -p 8080:8501 --name linkedin-agent   -e GROQ_API_KEY=your_groq_key   -e TAVILY_API_KEY=your_tavily_key   linkedin-agent:latest
+```
 
+Access app → [http://localhost:8080](http://localhost:8080)
 
-Access app → http://localhost:8080
+---
 
-☁️ Deployment (AWS)
-1. Push to ECR
+## ☁️ Deployment (AWS)
 
-Repo URI:
+### 1. Push to ECR
+- Repo URI:  
+  ```
+  <AWS_ACCOUNT_ID>.dkr.ecr.<region>.amazonaws.com/linkedin-agent
+  ```
+- Build & push:
+  ```bash
+  docker build -t linkedin-agent .
+  docker tag linkedin-agent:latest <ECR_URI>:latest
+  docker push <ECR_URI>:latest
+  ```
 
-<AWS_ACCOUNT_ID>.dkr.ecr.<region>.amazonaws.com/linkedin-agent
+### 2. Run on EC2
+```bash
+docker run -d -p 8080:8501 --restart unless-stopped --name linkedin-agent   -e GROQ_API_KEY=$GROQ_API_KEY   -e TAVILY_API_KEY=$TAVILY_API_KEY   <ECR_URI>:latest
+```
 
+### 3. GitHub Actions CI/CD
+- Push → GitHub Actions →  
+  - Build Docker image → Push to ECR  
+  - Deploy latest container on EC2  
 
-Build & push:
+Workflow: `.github/workflows/main.yml`
 
-docker build -t linkedin-agent .
-docker tag linkedin-agent:latest <ECR_URI>:latest
-docker push <ECR_URI>:latest
+---
 
-2. Run on EC2
-docker run -d -p 8080:8501 --restart unless-stopped --name linkedin-agent \
-  -e GROQ_API_KEY=$GROQ_API_KEY \
-  -e TAVILY_API_KEY=$TAVILY_API_KEY \
-  <ECR_URI>:latest
-
-3. GitHub Actions CI/CD
-
-Push → GitHub Actions →
-
-Build Docker image → Push to ECR
-
-Deploy latest container on EC2
-
-Workflow: .github/workflows/main.yml
-
-🌐 Access
-
-Once deployed →
-
+## 🌐 Access
+Once deployed →  
+```
 http://<EC2-PUBLIC-IP>:8080
+```
 
+(Optional: Use Elastic IP + reverse proxy for stable `https://` access.)
 
-(Optional: Use Elastic IP + reverse proxy for stable https:// access.)
+---
 
-📊 Agent Workflow Diagram
+## 📊 Agent Workflow Diagram
+```mermaid
 graph TD
     A[News Finder Agent] --> B[Summarizer Agent]
     B --> C[Reviewer Agent]
     C -- pass --> D[Generator Agent]
     C -- fail --> E[Improver Agent]
     E --> C
+```
 
-🤝 Contributing
+---
 
-Pull requests welcome! For major changes, please open an issue first.
+## 🤝 Contributing
+Pull requests welcome! For major changes, please open an issue first.  
 
-📜 License
+---
 
+## 📜 License
 MIT License
